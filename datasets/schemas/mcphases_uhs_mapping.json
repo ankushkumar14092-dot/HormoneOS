@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "mcPHASES → UHS Column Mapping",
+  "description": "Documents how each mcPHASES CSV column maps to the Universal Hormonal Schema",
+  "sources": {
+    "hormones_and_selfreport.csv": {
+      "id":              "patient_id",
+      "day_in_study":    "day_in_study",
+      "study_interval":  "base_year_for_timestamp",
+      "phase":           "cycle.phase  (Menstrual→menstrual, Follicular→follicular, Fertility→ovulatory, Luteal→luteal)",
+      "lh":              "hormones.lh_miu_ml",
+      "estrogen":        "hormones.estrogen_pg_ml",
+      "pdg":             "hormones.progesterone_ng_ml",
+      "appetite":        "symptoms[name=appetite]",
+      "exerciselevel":   "symptoms[name=exerciselevel]",
+      "headaches":       "symptoms[name=headaches]",
+      "cramps":          "symptoms[name=cramps]",
+      "sorebreasts":     "symptoms[name=sorebreasts]",
+      "fatigue":         "symptoms[name=fatigue]",
+      "sleepissue":      "symptoms[name=sleepissue]",
+      "moodswing":       "symptoms[name=moodswing]",
+      "stress":          "symptoms[name=stress]",
+      "foodcravings":    "symptoms[name=foodcravings]",
+      "indigestion":     "symptoms[name=indigestion]",
+      "bloating":        "symptoms[name=bloating]"
+    },
+    "heart_rate.csv": {
+      "bpm":             "wearables.heart_rate_bpm  (daily mean)"
+    },
+    "active_minutes.csv": {
+      "lightly+moderately+very": "wearables.active_minutes  (daily sum)"
+    },
+    "computed_temperature.csv": {
+      "nightly_temperature": "wearables.computed_temperature_c  (daily mean)"
+    },
+    "demographic_vo2_max.csv": {
+      "demographic_vo2_max":       "wearables.vo2_max",
+      "demographic_vo2_max_error": "wearables.vo2_max_error"
+    },
+    "glucose.csv": {
+      "glucose_value":   "glucose.glucose_mg_dl  (daily mean, mmol/L in source)"
+    },
+    "resting_heart_rate.csv": {
+      "value":           "wearables.heart_rate_bpm fallback (resting)"
+    },
+    "subject-info.csv": {
+      "birth_year":      "patients.birth_year"
+    }
+  },
+  "severity_scale": {
+    "Very Low/Little": 1,
+    "Low":             2,
+    "Moderate":        3,
+    "High":            4,
+    "Very High":       5
+  }
+}

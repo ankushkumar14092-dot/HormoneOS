@@ -1,0 +1,42 @@
+# ─── Secrets / environment ────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ─── Python ───────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ─── Node / Next.js ───────────────────────────────────────────────────────
+node_modules/
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# ─── ML artifacts ─────────────────────────────────────────────────────────
+ml/src/weights/
+*.pt
+*.pth
+*.ckpt
+
+# ─── Uploads / runtime data ───────────────────────────────────────────────
+/tmp/hormoneos_uploads/
+uploads/
+
+# ─── OS / editor ──────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.log
+
+# large bundled dataset (download from PhysioNet instead)
+mcphases-*/

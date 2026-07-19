@@ -1,0 +1,57 @@
+# Production-oriented stack: built images (no source mounts), no hot-reload,
+# multi-worker backend, and env-driven secrets/URLs.
+#
+#   export POSTGRES_PASSWORD=...            # required
+#   export OPENAI_API_KEY=...              # optional
+#   export CORS_ORIGINS=https://your.app   # your frontend origin(s)
+#   export NEXT_PUBLIC_API_URL=https://api.your.app
+#   docker compose -f docker-compose.prod.yml up --build -d
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: hormoneos
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: hormoneos
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hormoneos"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    command: >
+      uv run uvicorn app.main:app
+      --host 0.0.0.0 --port 8000 --workers 4
+    environment:
+      DATABASE_URL: postgresql://hormoneos:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@db:5432/hormoneos
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    volumes:
+      # Model code + trained weights (weights are gitignored, mounted at deploy time).
+      - ./ml:/ml:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:

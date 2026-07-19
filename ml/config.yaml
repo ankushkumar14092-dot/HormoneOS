@@ -1,0 +1,7 @@
+input_dim:  9
+hidden_dim: 256
+embed_dim:  128
+num_layers: 2
+batch_size: 16
+epochs:     30
+lr:         0.0003
